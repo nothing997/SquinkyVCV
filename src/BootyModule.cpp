@@ -152,7 +152,7 @@ struct RangeItem : MenuItem
 #ifdef __V1x
     void onAction(const event::Action &e) override
 #else
-    void onAction(EventAction &e) override
+    void onAction(sq::EventAction &e) override
 #endif
     {
         rangeChoice->text = ranges[rangeIndex];

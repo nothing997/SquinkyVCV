@@ -76,6 +76,8 @@ void CHBModule::onSampleRateChange()
 
 struct CHBWidget : ModuleWidget
 {
+    CHBModule* const module;
+
     friend struct CHBEconomyItem;
     CHBWidget(CHBModule *);
 
@@ -123,7 +125,6 @@ private:
     const float defaultGainParam = .63108f;
 
     int numHarmonics = 10;
-    CHBModule* const module;
     std::vector<ParamWidget* > harmonicParams;
     std::vector<float> harmonicParamMemory;
     ParamWidget* gainParam = nullptr;
