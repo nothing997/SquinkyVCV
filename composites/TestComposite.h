@@ -14,13 +14,13 @@ struct Light {
     }
 };
 
-// static const int PORT_MAX_CHANNELS = 16;
+static const int PORT_MAX_CHANNELS = 16;
 
 struct alignas(32) Port {
     /** Voltage of the port. */
     union {
         /** Unstable API. Use getVoltage() and setVoltage() instead. */
-        float voltages[PORT_MAX_CHANNELS] = {};
+        float voltages[::PORT_MAX_CHANNELS] = {};
         /** DEPRECATED. Unstable API. Use getVoltage() and setVoltage() instead. */
 
         // TODO: get rid of this
