@@ -445,6 +445,15 @@ std::string SampWidget::buildPitchrangeUIString() {
 }
 
 void SampWidget::loadSamplerFile() {
+#ifdef USING_CARDINAL_NOT_RACK
+    async_dialog_filebrowser(false, NULL, NULL, "Load sample", [this](char* path){
+        if(!path)
+            return;
+
+        this->requestNewSampleSet(FilePath(pathC));
+        nextUIState = State::Loading;
+    });
+#else
     static const char SMF_FILTERS[] = "Standard Sfz file (.sfz):sfz";
     osdialog_filters* filters = osdialog_filters_parse(SMF_FILTERS);
     std::string filename;
@@ -470,9 +479,13 @@ void SampWidget::loadSamplerFile() {
         this->requestNewSampleSet(FilePath(pathC));
         nextUIState = State::Loading;
     }
+#endif
 }
 
 void SampWidget::getRootFolder() {
+#ifdef USING_CARDINAL_NOT_RACK
+    // Nothing to do
+#else
     static const char SMF_FILTERS[] = "Standard Sfz file (.sfz):sfz";
     osdialog_filters* filters = osdialog_filters_parse(SMF_FILTERS);
     std::string filename;
@@ -491,6 +504,7 @@ void SampWidget::getRootFolder() {
     DEFER({
         std::free(pathC);
     });
+#endif
 }
 
 const float dx = 38;

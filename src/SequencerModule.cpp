@@ -172,17 +172,33 @@ void SequencerWidget::saveMidiFile()
 	DEFER({
 		osdialog_filters_free(filters);
 	});
+#ifdef USING_CARDINAL_NOT_RACK
+    async_dialog_filebrowser(true, NULL, filename.c_str(), NULL, "Save MIDI", [this](char* path){
+        if (system::getExtension(system::getFilename(path)) == "") {
+            path += ".mid";
+        }
 
+        bool b = MidiFileProxy::save(_module->sequencer->song, path.c_str());
+        if (!b) {
+            WARN("unable to write midi file to %s", path.c_str());
+        } else {
+            std::string fileFolder = rack::system::getDirectory(path);
+            _module->sequencer->context->settings()->setMidiFilePath(fileFolder);
+        }
+    });
+#else
 	char* pathC = osdialog_file(OSDIALOG_SAVE, dir.c_str(), filename.c_str(), filters);
   
 	if (!pathC) {
 		// Fail silently
 		return;
 	}
+    
     std::string pathStr = pathC;;
 	DEFER({
 		std::free(pathC);
 	});
+
 
 	if (system::getExtension(system::getFilename(pathStr)) == "") {
 		pathStr += ".mid";
@@ -197,6 +213,7 @@ void SequencerWidget::saveMidiFile()
         std::string fileFolder = rack::system::getDirectory(pathStr);
         _module->sequencer->context->settings()->setMidiFilePath(fileFolder);
     }
+#endif
 }
 
 void SequencerWidget::loadMidiFile()
@@ -206,7 +223,18 @@ void SequencerWidget::loadMidiFile()
     std::string filename;
 
     std::string dir = _module->sequencer->context->settings()->getMidiFilePath();
+#ifdef USING_CARDINAL_NOT_RACK
+    async_dialog_filebrowser(false, NULL, NULL, "Load Midi", [this](char* path){
+        MidiSongPtr song = MidiFileProxy::load(pathC);
 
+        std::string temp(path);
+        std::string fileFolder = rack::system::getDirectory(temp);
+        if (song) {
+            // Seq++ doesn't make undo events for external modules.
+            _module->postNewSong(song, fileFolder, false);
+        }  
+    });
+#else
 	DEFER({
 		osdialog_filters_free(filters);
 	});
@@ -229,6 +257,7 @@ void SequencerWidget::loadMidiFile()
         // Seq++ doesn't make undo events for external modules.
         _module->postNewSong(song, fileFolder, false);
     }  
+#endif
 }
 
 void SequencerWidget::step()
