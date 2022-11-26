@@ -2,12 +2,6 @@
 
 #include "rack.hpp"
 
-using Input = ::rack::engine::Input;
-using Output = ::rack::engine::Output;
-using Param = ::rack::engine::Param;
-using Light = ::rack::engine::Light;
-using Module = ::rack::engine::Module;
-
 /**
  * Base class for composites embedable in a VCV Widget
  * This is used for "real" implementations
@@ -16,6 +10,11 @@ class WidgetComposite {
 public:
     using Port = ::rack::engine::Port;
     using ProcessArgs = ::rack::engine::Module::ProcessArgs;
+    using Input = ::rack::engine::Input;
+    using Output = ::rack::engine::Output;
+    using Param = ::rack::engine::Param;
+    using Light = ::rack::engine::Light;
+    using Module = ::rack::engine::Module;
 
     WidgetComposite(::rack::engine::Module* parent) : inputs(parent->inputs),
                                                       outputs(parent->outputs),

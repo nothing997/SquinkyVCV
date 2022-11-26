@@ -14,7 +14,7 @@ struct Light {
     }
 };
 
-static const int PORT_MAX_CHANNELS = 16;
+// static const int PORT_MAX_CHANNELS = 16;
 
 struct alignas(32) Port {
     /** Voltage of the port. */
@@ -38,7 +38,7 @@ struct alignas(32) Port {
     /** For rendering plug lights on cables.
 	Green for positive, red for negative, and blue for polyphonic.
 	*/
-    Light plugLights[3];
+    ::Light plugLights[3];
 
     /** Sets the voltage of the given channel. */
     void setVoltage(float voltage, int channel = 0) {
@@ -185,9 +185,9 @@ struct alignas(32) Port {
 #endif
 };
 
-struct Input : Port {
+struct Input : ::Port {
 };
-struct Output : Port {
+struct Output : ::Port {
 };
 
 struct Param {
@@ -203,6 +203,9 @@ class TestComposite {
 public:
     using Port = ::Port;
     using Param = ::Param;
+    using Input = ::Input;
+    using Output = ::Output;
+    using Light = ::Light;
 
     TestComposite() : inputs(40),
                       outputs(40),
