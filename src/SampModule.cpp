@@ -450,7 +450,7 @@ void SampWidget::loadSamplerFile() {
         if(!path)
             return;
 
-        this->requestNewSampleSet(FilePath(pathC));
+        this->requestNewSampleSet(FilePath(path));
         nextUIState = State::Loading;
     });
 #else

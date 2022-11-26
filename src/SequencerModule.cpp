@@ -174,15 +174,17 @@ void SequencerWidget::saveMidiFile()
 	});
 #ifdef USING_CARDINAL_NOT_RACK
     async_dialog_filebrowser(true, NULL, filename.c_str(), NULL, "Save MIDI", [this](char* path){
-        if (system::getExtension(system::getFilename(path)) == "") {
+        std::string pathStr = pathC;
+
+        if (system::getExtension(system::getFilename(pathStr)) == "") {
             path += ".mid";
         }
 
-        bool b = MidiFileProxy::save(_module->sequencer->song, path.c_str());
+        bool b = MidiFileProxy::save(_module->sequencer->song, pathStr.c_str());
         if (!b) {
-            WARN("unable to write midi file to %s", path.c_str());
+            WARN("unable to write midi file to %s", pathStr.c_str());
         } else {
-            std::string fileFolder = rack::system::getDirectory(path);
+            std::string fileFolder = rack::system::getDirectory(pathStr);
             _module->sequencer->context->settings()->setMidiFilePath(fileFolder);
         }
     });
@@ -225,7 +227,7 @@ void SequencerWidget::loadMidiFile()
     std::string dir = _module->sequencer->context->settings()->getMidiFilePath();
 #ifdef USING_CARDINAL_NOT_RACK
     async_dialog_filebrowser(false, NULL, NULL, "Load Midi", [this](char* path){
-        MidiSongPtr song = MidiFileProxy::load(pathC);
+        MidiSongPtr song = MidiFileProxy::load(path);
 
         std::string temp(path);
         std::string fileFolder = rack::system::getDirectory(temp);
